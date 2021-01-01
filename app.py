@@ -49,9 +49,9 @@ class Venue(db.Model):
     website = db.Column(db.String(120))
     seeking_talent= db.Column(db.Boolean)
     seeking_description = db.Column(db.String(120))
-    past_shows=db.Column(db.String(120), default=0)
+    past_shows=db.Column(db.String(120))
     past_show_count= db.Column(db.Integer, default=0)
-    upcoming_shows=db.Column(db.Integer, default=0)
+    upcoming_shows=db.Column(db.String(120))
     upcoming_shows_count=db.Column(db.Integer, default=0)
     genres = db.relationship('Genres', backref ='venue')
 
@@ -172,7 +172,6 @@ def show_venue(venue_id):
       genres=[]
       venues = Venue.query.filter_by(id=venue_id).all()
       genre = Genres.query.filter_by(venue_id = venue_id).all()
-      print(venues[0].upcoming_shows)
       for i in range(len(genre)):
           genres.append(genre[i].genre)
   except:
@@ -190,38 +189,50 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
+    name_exists = False
+    state_exists = False
+    city_exists = False
+    address_exists = False
     try:
       name = request.form.get('name')
       city = request.form.get('city')
       state = request.form.get('state')
       address = request.form.get('address')
-      phone_num = request.form.get('phone')
-      genres = request.form.getlist('genres')
-      image_link = request.form.get('image_link')
-      fb_link = request.form.get('facebook_link')
-      venue = Venue(name = name, city = city, state = state,address = address, phone = phone_num, image_link=image_link, facebook_link = fb_link)
-      db.session.add(venue)
-      db.session.commit()
 
- #Adding Genres to Genre table
- #Two commits to add venue ID
-      for i in range(len(genres)):
-          genre = Genres(genre = genres[i], venue_id = venue.id)
-          db.session.add(genre)
-      db.session.commit()
+      existing_name = Venue.query.filter_by(name = name).all()
+      existing_city = Venue.query.filter_by(city = city). all()
+      existing_state = Venue.query.filter_by(state = state).all()
+      existing_address = Venue.query.filter_by(address = address).all()
+
+
+      if not existing_name and not existing_city and not existing_state and not existing_address:
+          phone_num = request.form.get('phone')
+          genres = request.form.getlist('genres')
+          image_link = request.form.get('image_link')
+          fb_link = request.form.get('facebook_link')
+          venue = Venue(name = name, city = city, state = state,address = address, phone = phone_num, image_link=image_link, facebook_link = fb_link)
+          db.session.add(venue)
+          db.session.commit()
+
+         #Adding Genres to Genre table
+         #Two commits to add venue ID
+          for i in range(len(genres)):
+              genre = Genres(genre = genres[i], venue_id = venue.id)
+              db.session.add(genre)
+          db.session.commit()
+      else:
+          name_exists = True
+          state_exists = True
+          city_exists = True
+          address_exists = True
     except:
       db.session.rollback()
     finally:
       db.session.close()
-
-      # TODO: insert form data as a new Venue record in the db, instead
-      # TODO: modify data to be the data object returned from db insertion
-
-      # on successful db insert, flash success
-      flash('Venue ' + request.form['name']+ ' was successfully listed!')
-      # TODO: on unsuccessful db insert, flash an error instead.
-      # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-      # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+      if name_exists == False and state_exists ==False and city_exists==False and address_exists==False:
+          flash('Venue ' + request.form['name']+ ' was successfully listed!')
+      else:
+          flash('Venue ' + request.form['name']+ ' was not listed, venue name exists')
       return redirect(url_for('index'))
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
@@ -240,20 +251,15 @@ def delete_venue(venue_id):
 @app.route('/artists')
 def artists():
   # TODO: replace with real data returned from querying the database
+    data = []
+    artists = Artist.query.all()
+    for i in range(len(artists)):
+            data.append({
+              "id": artists[i].id,
+              "name": artists[i].name,
+            })
 
-
-
-  data=[{
-    "id": 4,
-    "name": "Guns N Petals",
-  }, {
-    "id": 5,
-    "name": "Matt Quevedo",
-  }, {
-    "id": 6,
-    "name": "The Wild Sax Band",
-  }]
-  return render_template('pages/artists.html', artists=data)
+    return render_template('pages/artists.html', artists=data)
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
@@ -280,9 +286,6 @@ def show_artist(artist_id):
         genre = Genres.query.filter_by(artist_id = artist_id).all()
         for i in range(len(genre)):
             genres.append(genre[i].genre)
-            print(genres)
-            print(genres[0])
-
     except:
         print(sys.exc_info())
     finally:
@@ -352,24 +355,38 @@ def create_artist_form():
 
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
+ name_exists = False
+ state_exists = False
+ city_exists = False
  try:
     name = request.form.get('name')
     city = request.form.get('city')
     state = request.form.get('state')
-    phone_num = request.form.get('phone')
-    fb_link = request.form.get('facebook_link')
-    image_link = request.form.get('image_link')
-    genres = request.form.getlist('genres')
-    print(genres)
-    artist = Artist(name=name, city=city, state=state, phone=phone_num, image_link=image_link, facebook_link=fb_link)
-    print(artist)
-    db.session.add(artist)
-    db.session.commit()
 
-    for i in range(len(genres)):
-        genre = Genres(genre=genres[i], artist_id=artist.id)
-        db.session.add(genre)
-    db.session.commit()
+    existing_name= Artist.query.filter_by(name = name).all()
+    existing_city=Artist.query.filter_by(city = city).all()
+    existing_state=Artist.query.filter_by(state = state).all()
+
+    if not existing_name and not existing_city and not existing_state:
+        phone_num = request.form.get('phone')
+        fb_link = request.form.get('facebook_link')
+        image_link = request.form.get('image_link')
+        genres = request.form.getlist('genres')
+        print(genres)
+        artist = Artist(name=name, city=city, state=state, phone=phone_num, image_link=image_link, facebook_link=fb_link)
+        print(artist)
+        db.session.add(artist)
+        db.session.commit()
+
+        for i in range(len(genres)):
+            genre = Genres(genre=genres[i], artist_id=artist.id)
+            db.session.add(genre)
+        db.session.commit()
+    else:
+         name_exists = True
+         state_exists = True
+         city_exists = True
+
  except:
     print("error")
     db.session.rollback()
@@ -382,7 +399,10 @@ def create_artist_submission():
   # TODO: modify data to be the data object returned from db insertion
 
   # on successful db insert, flash success
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    if name_exists == False and state_exists ==False and city_exists==False:
+        flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    else:
+        flash('Artist ' + request.form['name'] + ' was not listed, artist already exists')
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
     return render_template('pages/home.html')
