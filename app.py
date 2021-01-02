@@ -131,11 +131,16 @@ def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
   data = []
-  venues = Venue.query.distinct("state").all()
+  venues = Venue.query.distinct("state","city").all()
+  print(venues)
+  print(len(venues))
   for i in range(len(venues)):
-      venues_state=Venue.query.filter_by(state= venues[i].state).all()
+      venues_state=Venue.query.filter_by(state= venues[i].state, city=venues[i].city).all()
+      print(venues_state)
+      print(len(venues_state))
       for x in range(len(venues_state)):
           venues_common= Venue.query.filter_by(city=venues_state[x].city).all()
+          print(venues_common[x].city)
           data.append({
             "city": venues_common[x].city + ",",
             "state": venues_state[x].state,
@@ -156,15 +161,12 @@ def search_venues():
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-  response={
-    "count": 1,
-    "data": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }
-  return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
+  search_term = request.form.get('search_term')
+  search_results = Venue.query.filter(Venue.name.ilike('%'+search_term+'%')).all()
+  search_count=len(search_results)
+
+
+  return render_template('pages/search_venues.html', results=search_results, search_term=request.form.get('search_term', ''), count=search_count)
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
@@ -199,18 +201,16 @@ def create_venue_submission():
       state = request.form.get('state')
       address = request.form.get('address')
 
+
       existing_name = Venue.query.filter_by(name = name).all()
-      existing_city = Venue.query.filter_by(city = city). all()
-      existing_state = Venue.query.filter_by(state = state).all()
-      existing_address = Venue.query.filter_by(address = address).all()
 
-
-      if not existing_name and not existing_city and not existing_state and not existing_address:
+      if len(existing_name)==0:
           phone_num = request.form.get('phone')
           genres = request.form.getlist('genres')
           image_link = request.form.get('image_link')
           fb_link = request.form.get('facebook_link')
           venue = Venue(name = name, city = city, state = state,address = address, phone = phone_num, image_link=image_link, facebook_link = fb_link)
+          print("name doesnt exist")
           db.session.add(venue)
           db.session.commit()
 
@@ -225,6 +225,7 @@ def create_venue_submission():
           state_exists = True
           city_exists = True
           address_exists = True
+          print('name exists')
     except:
       db.session.rollback()
     finally:
@@ -263,23 +264,15 @@ def artists():
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
-  # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-  # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
-  # search for "band" should return "The Wild Sax Band".
-  response={
-    "count": 1,
-    "data": [{
-      "id": 4,
-      "name": "Guns N Petals",
-      "num_upcoming_shows": 0,
-    }]
-  }
-  return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
+
+  search_term = request.form.get('search_term')
+  search_results = Artist.query.filter(Artist.name.ilike('%'+search_term+'%')).all()
+  search_count=len(search_results)
+  return render_template('pages/search_artists.html', results=search_results, search_term=request.form.get('search_term', ''), count=search_count)
 
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
-  # shows the venue page with the given venue_id
-  # TODO: replace with real venue data from the venues table, using venue_id
+
     try:
         genres=[]
         artists = Artist.query.filter_by(id=artist_id).all()
