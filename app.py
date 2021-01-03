@@ -51,7 +51,7 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String(120))
     past_shows=db.Column(db.String(120))
     past_show_count= db.Column(db.Integer, default=0)
-    upcoming_shows=db.Column(db.String(120))
+    upcoming_shows=db.Column(db.String(120), default="None")
     upcoming_shows_count=db.Column(db.Integer, default=0)
     genres = db.relationship('Genres', backref ='venue')
 
@@ -289,54 +289,76 @@ def show_artist(artist_id):
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
   form = ArtistForm()
-  artist={
-    "id": 4,
-    "name": "Guns N Petals",
-    "genres": ["Rock n Roll"],
-    "city": "San Francisco",
-    "state": "CA",
-    "phone": "326-123-5000",
-    "website": "https://www.gunsnpetalsband.com",
-    "facebook_link": "https://www.facebook.com/GunsNPetals",
-    "seeking_venue": True,
-    "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
-    "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-  }
+  artist=Artist.query.filter_by(id=artist_id).all()
+
   # TODO: populate form with fields from artist with ID <artist_id>
-  return render_template('forms/edit_artist.html', form=form, artist=artist)
+  return render_template('forms/edit_artist.html', form=form, artist=artist[0])
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-  # TODO: take values from the form submitted, and update existing
-  # artist record with ID <artist_id> using the new attributes
+    try:
+      name = request.form.get('name')
+      city = request.form.get('city')
+      state = request.form.get('state')
+      phone = request.form.get('phone_num')
+      facebook_link = request.form.get('facebook_link')
 
-  return redirect(url_for('show_artist', artist_id=artist_id))
+      artist=Artist.query.filter_by(id=artist_id).first()
+      artist.name = name
+      artist.city = city
+      artist.state = state
+      artist.phone = phone
+      artist.facebook_link = facebook_link
+
+
+      db.session.commit()
+    except:
+      db.session.rollback()
+      print("error")
+      print(sys.exc_info())
+    finally:
+      db.session.close()
+
+
+    return redirect(url_for('show_artist', artist_id=artist_id))
+
+
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
   form = VenueForm()
-  venue={
-    "id": 1,
-    "name": "The Musical Hop",
-    "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-    "address": "1015 Folsom Street",
-    "city": "San Francisco",
-    "state": "CA",
-    "phone": "123-123-1234",
-    "website": "https://www.themusicalhop.com",
-    "facebook_link": "https://www.facebook.com/TheMusicalHop",
-    "seeking_talent": True,
-    "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-    "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
-  }
-  # TODO: populate form with values from venue with ID <venue_id>
+  venue=Venue.query.filter_by(id=venue_id).first()
+
   return render_template('forms/edit_venue.html', form=form, venue=venue)
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
+    try:
+      name = request.form.get('name')
+      city = request.form.get('city')
+      state = request.form.get('state')
+      phone = request.form.get('phone_num')
+      facebook_link = request.form.get('facebook_link')
+
+      venue=Venue.query.filter_by(id=venue_id).first()
+      venue.name = name
+      venue.city = city
+      venue.state = state
+      venue.phone = phone
+      venue.facebook_link = facebook_link
+      #venue.upcoming_shows = "none"
+
+      db.session.commit()
+    except:
+      db.session.rollback()
+      print("error")
+      print(sys.exc_info())
+    finally:
+      db.session.close()
+
   # TODO: take values from the form submitted, and update existing
   # venue record with ID <venue_id> using the new attributes
-  return redirect(url_for('show_venue', venue_id=venue_id))
+    return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
 #  ----------------------------------------------------------------
