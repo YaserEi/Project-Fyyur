@@ -132,15 +132,10 @@ def venues():
   #       num_shows should be aggregated based on number of upcoming shows per venue.
   data = []
   venues = Venue.query.distinct("state","city").all()
-  print(venues)
-  print(len(venues))
   for i in range(len(venues)):
       venues_state=Venue.query.filter_by(state= venues[i].state, city=venues[i].city).all()
-      print(venues_state)
-      print(len(venues_state))
       for x in range(len(venues_state)):
           venues_common= Venue.query.filter_by(city=venues_state[x].city).all()
-          print(venues_common[x].city)
           data.append({
             "city": venues_common[x].city + ",",
             "state": venues_state[x].state,
@@ -236,8 +231,24 @@ def create_venue_submission():
           flash('Venue ' + request.form['name']+ ' was not listed, venue name exists')
       return redirect(url_for('index'))
 
-@app.route('/venues/<venue_id>', methods=['DELETE'])
+@app.route('/venues/<venue_id>', methods=['POST'])
 def delete_venue(venue_id):
+  try:
+    venue = Venue.query.get(venue_id)
+    genres = Genres.query.filter_by(id = venue_id).all()
+
+    for i in range(len(genres)):
+        db.session.delete(genres[i])
+
+    db.session.delete(venue)
+    db.session.commit()
+  except:
+    print(sys.exc_info())
+    print("error")
+    db.session.rollback()
+  finally:
+    print("finally")
+    db.session.close()
 
 
   # TODO: Complete this endpoint for taking a venue_id, and using
@@ -245,7 +256,7 @@ def delete_venue(venue_id):
 
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  return redirect(url_for('venues'))
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -387,9 +398,7 @@ def create_artist_submission():
         fb_link = request.form.get('facebook_link')
         image_link = request.form.get('image_link')
         genres = request.form.getlist('genres')
-        print(genres)
         artist = Artist(name=name, city=city, state=state, phone=phone_num, image_link=image_link, facebook_link=fb_link)
-        print(artist)
         db.session.add(artist)
         db.session.commit()
 
