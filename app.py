@@ -173,24 +173,23 @@ def show_venue(venue_id):
       venues = Venue.query.filter_by(id=venue_id).first()
       genre = Genres.query.filter_by(venue_id = venue_id).all()
 
-      show= db.session.query(Venue).join(Shows).values(Shows.start_time, Venue.name,
-                       Shows.artist_id, Shows.venue_id, Shows.name, Venue.image_link)
+      show= db.session.query(Artist).join(Shows).values(Shows.start_time, Artist.name,
+                       Shows.artist_id, Shows.venue_id, Shows.name, Artist.image_link)
       print(show)
 
       shows=[]
       print("1")
-      for start_time,venue_name,artist_id,venue_id,show_name,image_link in show:
+      for start_time,artist_name,artist_id,show_venue_id,show_name,image_link in show:
           shows.append({
           'start_time': start_time,
           'show name':show_name,
           'artist_id':artist_id,
-          'venue_id': venue_id,
-          'venue_name': venue_name,
+          'venue_id': show_venue_id,
+          'artist_name': artist_name,
           'image_link': image_link
           })
-      print("2")
-      print(show)
 
+      print(shows)
       #used to update show counts
       upcoming_shows_count=0
       past_shows_count=0
@@ -199,20 +198,20 @@ def show_venue(venue_id):
       upcoming_shows=[]
       past_shows=[]
 
-
       artist=Artist.query.filter_by(id=shows[0]['artist_id']).first()
-
 
       # Update shows Count
       if shows:  # Check if shows is empty
           for i in range(len(shows)):  # length of shows
-              start_date_obj = datetime.datetime.strptime(shows[i]['start_time'], '%Y-%m-%d %H:%M:%S') #convert starttime string to date
-              if (start_date_obj.date() <date.today()):
-                  past_shows_count +=1
-                  past_shows.append(shows[i])
-              else:
-                  upcoming_shows_count+=1
-                  upcoming_shows.append(shows[i])
+              if shows[i]['venue_id'] == venue_id:
+                  print(shows[i]['venue_id'])
+                  start_date_obj = datetime.datetime.strptime(shows[i]['start_time'], '%Y-%m-%d %H:%M:%S') #convert starttime string to date
+                  if (start_date_obj.date() <date.today()):
+                      past_shows_count +=1
+                      past_shows.append(shows[i])
+                  else:
+                      upcoming_shows_count+=1
+                      upcoming_shows.append(shows[i])
       print(shows)
 
       venues.upcoming_shows_count=upcoming_shows_count
@@ -366,7 +365,6 @@ def show_artist(artist_id):
 
         if shows:  # Check if shows is empty
             for i in range(len(shows)):  # length of shows
-                print(shows[i])
                 if shows[i]['artist_id'] == artist_id:  # make sure the artist id is the one being passed
                     start_date_obj = datetime.datetime.strptime(shows[i]['start_time'], '%Y-%m-%d %H:%M:%S') #convert starttime string to date
                     if (start_date_obj.date() <date.today()):
