@@ -190,9 +190,12 @@ def show_venue(venue_id):
           })
       print("2")
       print(show)
+
+      #used to update show counts
       upcoming_shows_count=0
       past_shows_count=0
 
+      #used in the HTMl page
       upcoming_shows=[]
       past_shows=[]
 
@@ -200,6 +203,7 @@ def show_venue(venue_id):
       artist=Artist.query.filter_by(id=shows[0]['artist_id']).first()
 
 
+      # Update shows Count
       if shows:  # Check if shows is empty
           for i in range(len(shows)):  # length of shows
               start_date_obj = datetime.datetime.strptime(shows[i]['start_time'], '%Y-%m-%d %H:%M:%S') #convert starttime string to date
@@ -239,9 +243,7 @@ def create_venue_form():
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
     name_exists = False
-    state_exists = False
-    city_exists = False
-    address_exists = False
+
     try:
       name = request.form.get('name')
       city = request.form.get('city')
@@ -256,7 +258,10 @@ def create_venue_submission():
           genres = request.form.getlist('genres')
           image_link = request.form.get('image_link')
           fb_link = request.form.get('facebook_link')
-          venue = Venue(name = name, city = city, state = state,address = address, phone = phone_num, image_link=image_link, facebook_link = fb_link)
+          website_link=request.form.get('website_link')
+          seeking_description=request.form.get('seeking_description')
+          venue = Venue(name = name, city = city, state = state,address = address,
+          phone = phone_num,seeking_description = seeking_description, image_link=image_link, website_link=website_link, facebook_link = fb_link)
           print("name doesnt exist")
           db.session.add(venue)
           db.session.commit()
@@ -269,9 +274,7 @@ def create_venue_submission():
           db.session.commit()
       else:
           name_exists = True
-          state_exists = True
-          city_exists = True
-          address_exists = True
+
           print('name exists')
     except:
       db.session.rollback()
@@ -571,9 +574,9 @@ def create_show_submission():
     start_time = request.form.get('start_time')
     name = request.form.get('name')
 
-    venue = Venue.query.filter_by(id = venue_id).all()
+    venue = Venue.query.filter_by(id = venue_id).first()
     artist = Artist.query.filter_by(id = artist_id).first()
-
+ 
 
     if venue and artist:
         show = Shows(venue_id=venue_id, artist_id=artist_id, start_time=start_time, name=name)
