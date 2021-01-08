@@ -21,7 +21,7 @@ from models import app, db, Venue, Artist, Shows, Genres
 # App Config.
 #----------------------------------------------------------------------------#
 
-app = Flask(__name__)
+
 
 
 app.config.from_object('config')
@@ -419,8 +419,8 @@ def create_artist_form():
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
  name_exists = False
- state_exists = False
- city_exists = False
+ seeking = False
+
  try:
     name = request.form.get('name')
     city = request.form.get('city')
@@ -438,9 +438,15 @@ def create_artist_submission():
         website_link = request.form.get('website_link')
         seeking_description = request.form.get('seeking_description')
         seeking_venue = request.form.getlist('seeking_venue')
-        artist = Artist(name=name, city=city, state=state, phone=phone_num, image_link=image_link, facebook_link=fb_link)
+        if seeking_venue =='Yes':
+            seeking = True
+        artist = Artist(name=name, city=city, state=state, phone=phone_num,
+        image_link=image_link, facebook_link=fb_link, website_link = website_link,
+        seeking_description= seeking_description, seeking_venue=seeking)
+
         db.session.add(artist)
-        db.session.commit()
+        db.session.commit() # to create Artist ID
+
 
         for i in range(len(genres)):
             genre = Genres(genre=genres[i], artist_id=artist.id)
