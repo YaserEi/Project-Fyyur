@@ -438,7 +438,9 @@ def create_artist_submission():
         website_link = request.form.get('website_link')
         seeking_description = request.form.get('seeking_description')
         seeking_venue = request.form.getlist('seeking_venue')
-        if seeking_venue =='Yes':
+        print(seeking_venue)
+        if seeking_venue[0] =="Yes":
+            print("True")
             seeking = True
         artist = Artist(name=name, city=city, state=state, phone=phone_num,
         image_link=image_link, facebook_link=fb_link, website_link = website_link,
