@@ -9,6 +9,5 @@ DEBUG = True
 # Connect to the database
 
 
-# TODO IMPLEMENT DATABASE URL
 SQLALCHEMY_DATABASE_URI = 'postgres://yasereisa@localhost:5432/musicdb'
 SQLALCHEMY_TRACK_MODIFICATIONS =False
