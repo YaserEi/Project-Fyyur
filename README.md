@@ -14,7 +14,9 @@ Fyyur is a musical venue and artist booking site that facilitates the discovery 
 
 ```
 python3 -m venv virtenv
-source venv/bin/activate
+source virtenv/bin/activate # activates virtual env
+deactivate #deactivates virtual env
+
 ```
 
 ### 1. Backend Dependencies
@@ -89,12 +91,17 @@ Overall:
 pip install -r requirements.txt
 ```
 
- **Run the development server:**
+ **Setup database:**
 ```
 createdb musicdb
-export FLASK_APP=myapp
+flask db migrate
+flask db upgrade
+```
+ **Run the development server:**
+```
+export FLASK_APP=app.py
 export FLASK_ENV=development # enables debug mode
-python3 app.py
+flask run
 ```
 
 
