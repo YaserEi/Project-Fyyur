@@ -14,7 +14,9 @@ Fyyur is a musical venue and artist booking site that facilitates the discovery 
 
 ```
 python3 -m venv virtenv
-source venv/bin/activate
+source venv/bin/activate # activates virtual env
+deactivate #deactivates virtual env
+
 ```
 
 ### 1. Backend Dependencies
