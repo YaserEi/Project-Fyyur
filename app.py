@@ -159,7 +159,7 @@ def show_venue(venue_id):
       return render_template('pages/show_venue.html', venue=venues,
        genres=genres, shows=shows,upcoming_shows=upcoming_shows, past_shows=past_shows)
 
-#  Create Venue
+#  View Venue
 #  ----------------------------------------------------------------
 
 @app.route('/venues/create', methods=['GET'])
@@ -167,8 +167,11 @@ def create_venue_form():
   form = VenueForm()
   return render_template('forms/new_venue.html', form=form)
 
+#  Create Venue
+#  ----------------------------------------------------------------
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
+  # controls flash message
     name_exists = False
 
     try:
@@ -177,11 +180,10 @@ def create_venue_submission():
       state = request.form.get('state')
       address = request.form.get('address')
 
+      # see if venue name already exsits
+      existing_name = Venue.query.filter_by(name = name).all()   
 
-      existing_name = Venue.query.filter_by(name = name).all()   # see if venue name already exsits
-
-
-      print(len(existing_name))
+      #check if venue name already exists to avoid duplicates
       if len(existing_name)==0:
           phone_num = request.form.get('phone')
           genres = request.form.getlist('genres')
@@ -189,19 +191,8 @@ def create_venue_submission():
           fb_link = request.form.get('facebook_link')
           website_link=request.form.get('website_link')
           seeking_description=request.form.get('seeking_description')
-          print(name)
-          print(city)
-          print(state)
-          print(address)
-          print(phone_num)
-          print(seeking_description)
-          print(image_link)
-          print(website_link)
-          print(fb_link)
           venue = Venue(name = name, city = city, state = state,address = address,
           phone = phone_num,seeking_description = seeking_description, image_link=image_link, website=website_link, facebook_link = fb_link)
-          print(venue)
-          print("name doesnt exist")
           db.session.add(venue)
           db.session.commit()
 
@@ -211,11 +202,8 @@ def create_venue_submission():
               genre = Genres(genre = genres[i], venue_id = venue.id)
               db.session.add(genre)
           db.session.commit()
-          print("comitted")
       else:
           name_exists = True
-
-          print('name exists')
     except:
       db.session.rollback()
     finally:
@@ -239,18 +227,13 @@ def delete_venue(venue_id):
     db.session.commit()
   except:
     print(sys.exc_info())
-    print("error")
     db.session.rollback()
   finally:
-    print("finally")
     db.session.close()
-
-
-
-  # clicking that button delete it from the db then redirect the user to the homepage
+  # clicking that button will delete it from the db then redirect the user to the homepage
   return redirect(url_for('venues'))
 
-#  Artists
+#  View All Artists
 #  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
@@ -454,10 +437,8 @@ def create_artist_submission():
          city_exists = True
 
  except:
-    print("error")
     db.session.rollback()
  finally:
-    print("finally")
     db.session.close()
 
   # called upon submitting the new artist listing form
