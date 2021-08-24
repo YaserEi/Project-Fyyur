@@ -91,7 +91,7 @@ Overall:
 pip install -r requirements.txt
 ```
 
-**setupd database: ***
+ **Setupdb database: **
 ```
 createdb musicdb
 flask db migrate
