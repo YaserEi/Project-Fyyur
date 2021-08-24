@@ -10,6 +10,13 @@ Fyyur is a musical venue and artist booking site that facilitates the discovery 
 
 ## Tech Stack (Dependencies)
 
+## Create virtual enviroment
+
+```
+python3 -m venv virtenv
+source venv/bin/activate
+```
+
 ### 1. Backend Dependencies
 Our tech stack will include the following:
  * **virtualenv** as a tool to create isolated Python environments
