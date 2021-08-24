@@ -6,17 +6,20 @@ import json
 import dateutil.parser
 import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
+import flask
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
+import sqlalchemy
 from forms import *
 import sys
 import datetime
 from datetime import date
-from models import app, db, Venue, Artist, Shows, Genres
+from models import  app, db, Venue, Artist, Shows, Genres
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -27,6 +30,7 @@ from models import app, db, Venue, Artist, Shows, Genres
 app.config.from_object('config')
 moment = Moment(app)
 db.init_app(app)
+
 
 
 
@@ -59,7 +63,6 @@ def index():
 
 @app.route('/venues')
 def venues():
-  #       num_shows should be aggregated based on number of upcoming shows per venue.
   data = []
   venues = Venue.query.distinct("state","city").all()
   for i in range(len(venues)):
@@ -83,8 +86,6 @@ def venues():
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
-  # seach for Hop should return "The Musical Hop".
-  # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
   search_term = request.form.get('search_term')
   search_results = Venue.query.filter(Venue.name.ilike('%'+search_term+'%')).all()
   search_count=len(search_results)
@@ -125,8 +126,9 @@ def show_venue(venue_id):
       past_shows=[]
 
       artist=Artist.query.filter_by(id=shows[0]['artist_id']).first()
+      print(artist)
 
-      # Update shows Count
+      
       if shows:  # Check if shows is empty
           for i in range(len(shows)):  # length of shows
               if shows[i]['venue_id'] == venue_id:
@@ -155,7 +157,7 @@ def show_venue(venue_id):
       print(sys.exc_info())
   finally:
       return render_template('pages/show_venue.html', venue=venues,
-       genres=genres, shows=shows,upcoming_shows=upcoming_shows, past_shows=past_shows, artist=artist)
+       genres=genres, shows=shows,upcoming_shows=upcoming_shows, past_shows=past_shows)
 
 #  Create Venue
 #  ----------------------------------------------------------------
@@ -176,8 +178,10 @@ def create_venue_submission():
       address = request.form.get('address')
 
 
-      existing_name = Venue.query.filter_by(name = name).all()
+      existing_name = Venue.query.filter_by(name = name).all()   # see if venue name already exsits
 
+
+      print(len(existing_name))
       if len(existing_name)==0:
           phone_num = request.form.get('phone')
           genres = request.form.getlist('genres')
@@ -185,8 +189,18 @@ def create_venue_submission():
           fb_link = request.form.get('facebook_link')
           website_link=request.form.get('website_link')
           seeking_description=request.form.get('seeking_description')
+          print(name)
+          print(city)
+          print(state)
+          print(address)
+          print(phone_num)
+          print(seeking_description)
+          print(image_link)
+          print(website_link)
+          print(fb_link)
           venue = Venue(name = name, city = city, state = state,address = address,
-          phone = phone_num,seeking_description = seeking_description, image_link=image_link, website_link=website_link, facebook_link = fb_link)
+          phone = phone_num,seeking_description = seeking_description, image_link=image_link, website=website_link, facebook_link = fb_link)
+          print(venue)
           print("name doesnt exist")
           db.session.add(venue)
           db.session.commit()
@@ -197,6 +211,7 @@ def create_venue_submission():
               genre = Genres(genre = genres[i], venue_id = venue.id)
               db.session.add(genre)
           db.session.commit()
+          print("comitted")
       else:
           name_exists = True
 

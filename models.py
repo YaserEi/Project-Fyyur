@@ -29,7 +29,6 @@ class Venue(db.Model):
     upcoming_shows_count=db.Column(db.Integer, default=0)
     genres = db.relationship('Genres', backref ='venue')
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
 class Artist(db.Model):
     __tablename__ = 'Artist'
@@ -69,3 +68,4 @@ class Shows(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
     start_time = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(), nullable=False)
+
