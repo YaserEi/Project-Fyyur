@@ -94,7 +94,7 @@ pip install -r requirements.txt
  **Run the development server:**
 ```
 createdb musicdb
-export FLASK_APP=myapp
+export FLASK_APP=app.py
 export FLASK_ENV=development # enables debug mode
 python3 app.py
 ```
