@@ -91,9 +91,14 @@ Overall:
 pip install -r requirements.txt
 ```
 
- **Run the development server:**
+**setupd database: **
 ```
 createdb musicdb
+flask db migrate
+flask db upgrade
+```
+ **Run the development server:**
+```
 export FLASK_APP=app.py
 export FLASK_ENV=development # enables debug mode
 flask run
