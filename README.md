@@ -17,6 +17,29 @@ Fyyur is a musical venue and artist booking site that facilitates the discovery 
 git clone git@github.com:YaserEi/Project-Fyyur.git
 ```
 
+## Main Files: Project Structure
+
+  ```sh
+  ├── README.md
+  ├── app.py *** the main driver of the app. Includes your SQLAlchemy models.
+                    "python app.py" to run after installing dependences
+  ├── config.py *** Database URLs, CSRF generation, etc
+  ├── error.log
+  ├── forms.py *** Your forms
+  ├── requirements.txt *** The dependencies we need to install with "pip3 install -r requirements.txt"
+  ├── static
+  │   ├── css 
+  │   ├── font
+  │   ├── ico
+  │   ├── img
+  │   └── js
+  └── templates
+      ├── errors
+      ├── forms
+      ├── layouts
+      └── pages
+  ```
+
 ## Create virtual enviroment
 
 ```
@@ -56,28 +79,6 @@ npm install bootstrap@3
 ```
 
 
-## Main Files: Project Structure
-
-  ```sh
-  ├── README.md
-  ├── app.py *** the main driver of the app. Includes your SQLAlchemy models.
-                    "python app.py" to run after installing dependences
-  ├── config.py *** Database URLs, CSRF generation, etc
-  ├── error.log
-  ├── forms.py *** Your forms
-  ├── requirements.txt *** The dependencies we need to install with "pip3 install -r requirements.txt"
-  ├── static
-  │   ├── css 
-  │   ├── font
-  │   ├── ico
-  │   ├── img
-  │   └── js
-  └── templates
-      ├── errors
-      ├── forms
-      ├── layouts
-      └── pages
-  ```
 
 Overall:
 * Models are located in the `MODELS` section of `app.py`.
