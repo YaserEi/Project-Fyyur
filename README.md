@@ -17,28 +17,6 @@ Fyyur is a musical venue and artist booking site that facilitates the discovery 
 git clone git@github.com:YaserEi/Project-Fyyur.git
 ```
 
-## Main Files: Project Structure
-
-  ```sh
-  ├── README.md
-  ├── app.py *** the main driver of the app. Includes your SQLAlchemy models.
-                    "python app.py" to run after installing dependences
-  ├── config.py *** Database URLs, CSRF generation, etc
-  ├── error.log
-  ├── forms.py *** Your forms
-  ├── requirements.txt *** The dependencies we need to install with "pip3 install -r requirements.txt"
-  ├── static
-  │   ├── css 
-  │   ├── font
-  │   ├── ico
-  │   ├── img
-  │   └── js
-  └── templates
-      ├── errors
-      ├── forms
-      ├── layouts
-      └── pages
-  ```
 
 ## Create virtual enviroment
 
@@ -90,10 +68,6 @@ Overall:
 
 
 
-
-
-
-
  **Install the dependencies:**
 ```
 pip install -r requirements.txt
@@ -112,4 +86,28 @@ export FLASK_ENV=development # enables debug mode
 flask run
 ```
 
+
+
+## Main Files: Project Structure
+
+  ```sh
+  ├── README.md
+  ├── app.py *** the main driver of the app. Includes your SQLAlchemy models.
+                    "python app.py" to run after installing dependences
+  ├── config.py *** Database URLs, CSRF generation, etc
+  ├── error.log
+  ├── forms.py *** Your forms
+  ├── requirements.txt *** The dependencies we need to install with "pip3 install -r requirements.txt"
+  ├── static
+  │   ├── css 
+  │   ├── font
+  │   ├── ico
+  │   ├── img
+  │   └── js
+  └── templates
+      ├── errors
+      ├── forms
+      ├── layouts
+      └── pages
+  ```
 
