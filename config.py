@@ -13,5 +13,5 @@ DEBUG = True
 # Connect to the database
 
 
-SQLALCHEMY_DATABASE_URI = 'postgresql://yasereisa@localhost:5432/musicdb'
+SQLALCHEMY_DATABASE_URI = 'postgresql://localhost:5432/musicdb'
 SQLALCHEMY_TRACK_MODIFICATIONS =False
