@@ -1,11 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from app import db
 
 
-app = Flask(__name__)
-db = SQLAlchemy()
-migrate = Migrate(app, db)
+
 
 
 
@@ -68,4 +67,5 @@ class Shows(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
     start_time = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(), nullable=False)
+
 
