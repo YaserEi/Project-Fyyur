@@ -47,6 +47,9 @@ Install [Bootstrap 3](https://getbootstrap.com/docs/3.3/getting-started/) for th
 npm init -y
 npm install bootstrap@3
 ```
+***Install Postgres***
+
+Install postgres using this link: https://postgresapp.com/
 
 
  **Install the dependencies:**
