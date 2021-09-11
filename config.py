@@ -13,7 +13,7 @@ DEBUG = True
 # Connect to the database
 
 
-SQLALCHEMY_DATABASE_URI = 'postgresql://localhost:5432/Fyyur'
+SQLALCHEMY_DATABASE_URI = 'postgresql://heroku.com:5432/Fyyur'
 engine = sqlalchemy.create_engine(SQLALCHEMY_DATABASE_URI)
 if not database_exists(engine.url):
     create_database(engine.url)
