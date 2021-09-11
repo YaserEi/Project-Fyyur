@@ -20,12 +20,10 @@ import datetime
 from datetime import date
 
 
-app = Flask(__name__)
-db = SQLAlchemy()
-migrate = Migrate(app, db)
 
 
-from models import   Venue, Artist, Shows, Genres
+
+from models import   app,db,Venue, Artist, Shows, Genres
 
 
 
