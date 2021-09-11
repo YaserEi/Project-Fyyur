@@ -37,7 +37,9 @@ Our tech stack will include the following:
 
 
 ### 2. Frontend Dependencies
-You must have the **HTML**, **CSS**, and **Javascript** with [Bootstrap 3](https://getbootstrap.com/docs/3.4/customize/) for our website's frontend. Bootstrap can only be installed by Node Package Manager (NPM). Therefore, if not already, download and install the [Node.js](https://nodejs.org/en/download/). Windows users must run the executable as an Administrator, and restart the computer after installation. After successfully installing the Node, verify the installation as shown below.
+You must have the **HTML**, **CSS**, and **Javascript** with [Bootstrap 3](https://getbootstrap.com/docs/3.4/customize/) for our website's frontend. Bootstrap can only be installed by Node Package Manager (NPM).
+
+download and install the [Node.js](https://nodejs.org/en/download/). 
 ```
 node -v
 npm -v
@@ -47,6 +49,9 @@ Install [Bootstrap 3](https://getbootstrap.com/docs/3.3/getting-started/) for th
 npm init -y
 npm install bootstrap@3
 ```
+***Install Postgres***
+
+Install postgres using this link: https://postgresapp.com/
 
 
  **Install the dependencies:**
@@ -71,26 +76,4 @@ Overall:
 * Web forms for creating data are located in `form.py`
 
 
-## Main Files: Project Structure
-
-  ```sh
-  ├── README.md
-  ├── app.py *** the main driver of the app. Includes your SQLAlchemy models.
-                    "python app.py" to run after installing dependences
-  ├── config.py *** Database URLs, CSRF generation, etc
-  ├── error.log
-  ├── forms.py *** Your forms
-  ├── requirements.txt *** The dependencies we need to install with "pip3 install -r requirements.txt"
-  ├── static
-  │   ├── css 
-  │   ├── font
-  │   ├── ico
-  │   ├── img
-  │   └── js
-  └── templates
-      ├── errors
-      ├── forms
-      ├── layouts
-      └── pages
-  ```
 
