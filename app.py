@@ -30,8 +30,8 @@ from models import   app,db,Venue, Artist, Shows, Genres
 app.config.from_object('config')
 moment = Moment(app)
 db.init_app(app)
-# with app.app_context():
-#     db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 #----------------------------------------------------------------------------#
