@@ -20,6 +20,6 @@ SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 # if not database_exists(engine.url):
 #     create_database(engine.url)
 
-if uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://", 1)
+if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
+    uri = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
 SQLALCHEMY_TRACK_MODIFICATIONS =False
