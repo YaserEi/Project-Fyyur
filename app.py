@@ -246,6 +246,25 @@ def artists():
 
     return render_template('pages/artists.html', artists=data)
 
+@app.route('/artist/<venue_id>', methods=['POST'])
+def delete_venue(venue_id):
+  try:
+    venue = Venue.query.get(venue_id)
+    genres = Genres.query.filter_by(id = venue_id).all()
+
+    for i in range(len(genres)):
+        db.session.delete(genres[i])
+
+    db.session.delete(venue)
+    db.session.commit()
+  except:
+    print(sys.exc_info())
+    db.session.rollback()
+  finally:
+    db.session.close()
+  # clicking that button will delete it from the db then redirect the user to the homepage
+  return redirect(url_for('artist'))
+
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
 
